@@ -338,6 +338,364 @@ public class Read {
 
     /**
      *  磁盘缓存
+     *  (1) 资源类型（Resource）：磁盘缓存中转换过后的图片
+     *  (2) 数据来源 (Data)：磁盘缓存中的原始图片
+     *
+     * ALL：既缓存原始图片，也缓存转换过后的图片。
+     * NONE：不缓存任何内容。
+     * DATA：只缓存原始图片。
+     * RESOURCE：只缓存转换过后的图片。
+     * AUTOMATIC：默认策略，它会尝试对本地和远程图片使用最佳的策略。如果是远程图片，则只缓存原始图片；如果是本地图片，那么只缓存转换过后的图片。
+     *
      */
+
+    /**
+     * (1）.1 资源类型（Resource）  DecodeJob类
+     */
+    //从主线程切换到子线程去执行请求的时候用到了磁盘缓存策略,
+    // 根据缓存策略获取到资源状态，然后再根据资源状态获取资源执行器,
+    // 最后调用 runGenerators() 方法
+//    private void runWrapped() {
+//        switch (runReason) {
+//            case INITIALIZE:
+    /**
+     *  1. 获取资源状态
+     */
+//                stage = getNextStage(Stage.INITIALIZE);
+    /**
+     *  2. 根据资源状态获取资源执行器
+     */
+
+//                currentGenerator = getNextGenerator();
+    /**
+     * 3. 执行
+     */
+//                runGenerators();
+//                break;
+//            case SWITCH_TO_SOURCE_SERVICE:
+//                runGenerators();
+//                break;
+//            case DECODE_DATA:
+//                decodeFromRetrievedData();
+//                break;
+//            default:
+//                throw new IllegalStateException("Unrecognized run reason: " + runReason);
+//        }
+//    }
+//
+//    private Stage getNextStage(Stage current) {
+//        switch (current) {
+//            case INITIALIZE:
+//                return diskCacheStrategy.decodeCachedResource()
+//                        ? Stage.RESOURCE_CACHE
+//                        : getNextStage(Stage.RESOURCE_CACHE);
+//            case RESOURCE_CACHE:
+//                return diskCacheStrategy.decodeCachedData()
+//                        ? Stage.DATA_CACHE
+//                        : getNextStage(Stage.DATA_CACHE);
+//            case DATA_CACHE:
+//                // Skip loading from source if the user opted to only retrieve the resource from cache.
+//                return onlyRetrieveFromCache ? Stage.FINISHED : Stage.SOURCE;
+//            case SOURCE:
+//            case FINISHED:
+//                return Stage.FINISHED;
+//            default:
+//                throw new IllegalArgumentException("Unrecognized stage: " + current);
+//        }
+//    }
+//
+//    private DataFetcherGenerator getNextGenerator() {
+//        switch (stage) {
+//            case RESOURCE_CACHE:
+//                return new ResourceCacheGenerator(decodeHelper, this);
+//            case DATA_CACHE:
+//                return new DataCacheGenerator(decodeHelper, this);
+//            case SOURCE:
+//                return new SourceGenerator(decodeHelper, this);
+//            case FINISHED:
+//                return null;
+//            default:
+//                throw new IllegalStateException("Unrecognized stage: " + stage);
+//        }
+//    }
+
+
+    /**
+     * (1）.2 资源类型（Resource） DecodeJob类
+     */
+//    private void runGenerators() {
+//        currentThread = Thread.currentThread();
+//        startFetchTime = LogTime.getLogTime();
+//        boolean isStarted = false;
+//        while (!isCancelled
+//                && currentGenerator != null
+//                && !(isStarted = currentGenerator.startNext())) {
+//            stage = getNextStage(stage);
+//            currentGenerator = getNextGenerator();
+//
+//            if (stage == Stage.SOURCE) {
+//                reschedule();
+//                return;
+//            }
+//        }
+//    }
+
+    /**
+     * (1）.3 资源类型（Resource）  ResourceCacheGenerator 类
+     */
+//    @Override
+//    public boolean startNext() {
+//
+//        while (modelLoaders == null || !hasNextModelLoader()) {
+//
+//            //（1）构建缓存Key
+//            currentKey =
+//                    new ResourceCacheKey(
+//                            helper.getArrayPool(),
+//                            sourceId,
+//                            helper.getSignature(),
+//                            helper.getWidth(),
+//                            helper.getHeight(),
+//                            transformation,
+//                            resourceClass,
+//                            helper.getOptions());
+//            //（2）缓存 Key 去获取缓存文件（获取转换后的图片）
+//            cacheFile = helper.getDiskCache().get(currentKey);
+//            if (cacheFile != null) {
+//                sourceKey = sourceId;
+//                modelLoaders = helper.getModelLoaders(cacheFile);
+//                modelLoaderIndex = 0;
+//            }
+//        }
+//
+//        loadData = null;
+//        boolean started = false;
+//        while (!started && hasNextModelLoader()) {
+//            ModelLoader<File, ?> modelLoader = modelLoaders.get(modelLoaderIndex++);
+//            loadData =
+//                    modelLoader.buildLoadData(
+//                            cacheFile, helper.getWidth(), helper.getHeight(), helper.getOptions());
+//            if (loadData != null && helper.hasLoadPath(loadData.fetcher.getDataClass())) {
+//                started = true;
+//                //（3）ByteBufferFileLoader
+//                loadData.fetcher.loadData(helper.getPriority(), this);
+//            }
+//        }
+//
+//        return started;
+//    }
+
+    /**
+     * (1）.4 资源类型（Resource）
+     */
+//    @Override
+//    public void loadData(
+//            @NonNull Priority priority, @NonNull DataCallback<? super ByteBuffer> callback) {
+//        ByteBuffer result;
+//        try {
+//            result = ByteBufferUtil.fromFile(file);
+//        } catch (IOException e) {
+//            if (Log.isLoggable(TAG, Log.DEBUG)) {
+//                Log.d(TAG, "Failed to obtain ByteBuffer for file", e);
+//            }
+    /**
+     * 将缓存文件转换成 ByteBuffer，然后通过 onDataReady() 方法回调出去
+     */
+//            callback.onLoadFailed(e);
+//            return;
+//        }
+//
+//        callback.onDataReady(result);
+//    }
+
+    /**
+     * (1）.5 资源类型（Resource） 存储资源类型 DecodeJob类
+     */
+//    <Z> Resource<Z> onResourceDecoded(DataSource dataSource, @NonNull Resource<Z> decoded) {
+//
+//
+//        boolean isFromAlternateCacheKey = !decodeHelper.isSourceKey(currentSourceKey);
+//        if (diskCacheStrategy.isResourceCacheable(
+//                isFromAlternateCacheKey, dataSource, encodeStrategy)) {
+//            if (encoder == null) {
+//                throw new Registry.NoResultEncoderAvailableException(transformed.get().getClass());
+//            }
+//            final Key key;
+//            //（1）根据缓存策略构建不同的缓存 Key
+//            switch (encodeStrategy) {
+//                case SOURCE:
+//                    key = new DataCacheKey(currentSourceKey, signature);
+//                    break;
+//                case TRANSFORMED:
+//                    key =
+//                            new ResourceCacheKey(
+//                                    decodeHelper.getArrayPool(),
+//                                    currentSourceKey,
+//                                    signature,
+//                                    width,
+//                                    height,
+//                                    appliedTransformation,
+//                                    resourceSubClass,
+//                                    options);
+//                    break;
+//                default:
+//                    throw new IllegalArgumentException("Unknown strategy: " + encodeStrategy);
+//            }
+//
+//            LockedResource<Z> lockedResult = LockedResource.obtain(transformed);
+//            //（2）调用 init() 方法给变量 key 赋值
+//            deferredEncodeManager.init(key, encoder, lockedResult);
+//            result = lockedResult;
+//        }
+//        return result;
+//    }
+
+//    private static class DeferredEncodeManager<Z> {
+//        private Key key;
+//        private ResourceEncoder<Z> encoder;
+//        private LockedResource<Z> toEncode;
+//
+//        <X> void init(Key key, ResourceEncoder<X> encoder, LockedResource<X> toEncode) {
+//            this.key = key;
+//            this.encoder = (ResourceEncoder<Z>) encoder;
+//            this.toEncode = (LockedResource<Z>) toEncode;
+//        }
+//
+//        void encode(DiskCacheProvider diskCacheProvider, Options options) {
+//            GlideTrace.beginSection("DecodeJob.encode");
+//            try {
+//                //（3）在 encode() 方法中使用了，该方法中就做了存储缓存的操作（存储转换后的图片）。
+//                diskCacheProvider
+//                        .getDiskCache()
+//                        .put(key, new DataCacheWriter<>(encoder, toEncode, options));
+//            } finally {
+//                toEncode.unlock();
+//                GlideTrace.endSection();
+//            }
+//        }
+//    }
+
+//
+    /**
+     * 解码完成了通知下去的步骤 DecodeJob类
+     */
+//    private void notifyEncodeAndRelease(Resource<R> resource, DataSource dataSource) {
+//        if (resource instanceof Initializable) {
+//            ((Initializable) resource).initialize();
+//        }
+//
+//        Resource<R> result = resource;
+//        LockedResource<R> lockedResource = null;
+//        if (deferredEncodeManager.hasResourceToEncode()) {
+//            lockedResource = LockedResource.obtain(resource);
+//            result = lockedResource;
+//        }
+//
+//        notifyComplete(result, dataSource);
+//
+//        stage = Stage.ENCODE;
+//        try {
+//            if (deferredEncodeManager.hasResourceToEncode()) {
+    /**
+     * (1）.6 资源类型（Resource） 将资源缓存到磁盘
+     */
+//                deferredEncodeManager.encode(diskCacheProvider, options);
+//            }
+//        } finally {
+//            if (lockedResource != null) {
+//                lockedResource.unlock();
+//            }
+//        }
+//        // Call onEncodeComplete outside the finally block so that it's not called if the encode process
+//        // throws.
+//        onEncodeComplete();
+//    }
+
+    /**
+     * (2 数据来源 (Data)
+     *
+     * 取文件：首先构建缓存 Key，然后根据缓存 Key 去获取缓存文件（获取原始图片），最后将缓存文件加载成需要的数据。
+     */
+
+    /**
+     * (2）.1 数据来源 (Data)存文件 网络请求完成时，将数据赋值给dataToCache
+     */
+//    void onDataReadyInternal(LoadData<?> loadData, Object data) {
+//        DiskCacheStrategy diskCacheStrategy = helper.getDiskCacheStrategy();
+//        if (data != null && diskCacheStrategy.isDataCacheable(loadData.fetcher.getDataSource())) {
+//            // 赋值
+//            dataToCache = data;
+//            // We might be being called back on someone else's thread. Before doing anything, we should
+//            // reschedule to get back onto Glide's thread.
+//            cb.reschedule();
+//        } else {
+//            cb.onDataFetcherReady(
+//                    loadData.sourceKey,
+//                    data,
+//                    loadData.fetcher,
+//                    loadData.fetcher.getDataSource(),
+//                    originalKey);
+//        }
+//    }
+
+    /**
+     * (2）.2 数据来源 (Data)存文件 SourceGenerator类
+     */
+//    @Override
+//    public boolean startNext() {
+//        //（1）
+//        if (dataToCache != null) {
+//            Object data = dataToCache;
+//            dataToCache = null;
+//            cacheData(data);
+//        }
+//
+//        if (sourceCacheGenerator != null && sourceCacheGenerator.startNext()) {
+//            return true;
+//        }
+//        sourceCacheGenerator = null;
+//
+//        loadData = null;
+//        boolean started = false;
+//        while (!started && hasNextModelLoader()) {
+//            loadData = helper.getLoadData().get(loadDataListIndex++);
+//            if (loadData != null
+//                    && (helper.getDiskCacheStrategy().isDataCacheable(loadData.fetcher.getDataSource())
+//                    || helper.hasLoadPath(loadData.fetcher.getDataClass()))) {
+//                started = true;
+//                startNextLoad(loadData);
+//            }
+//        }
+//        return started;
+//    }
+
+    /**
+     * (2）.3 数据来源 (Data)存文件  SourceGenerator类
+     */
+//    private void cacheData(Object dataToCache) {
+//        long startTime = LogTime.getLogTime();
+//        try {
+//            Encoder<Object> encoder = helper.getSourceEncoder(dataToCache);
+//            DataCacheWriter<Object> writer =
+//                    new DataCacheWriter<>(encoder, dataToCache, helper.getOptions());
+    /**
+     * （1）获取缓存的key
+     */
+//            originalKey = new DataCacheKey(loadData.sourceKey, helper.getSignature());
+    /**
+     *（2）存储缓存（存储原始图片）
+     */
+
+//            helper.getDiskCache().put(originalKey, writer);
+//
+//
+//        } finally {
+//            loadData.fetcher.cleanup();
+//        }
+//
+//        sourceCacheGenerator =
+//                new DataCacheGenerator(Collections.singletonList(loadData.sourceKey), helper, this);
+//    }
+
 
 }
